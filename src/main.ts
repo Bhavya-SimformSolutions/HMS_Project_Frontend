@@ -7,6 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 bootstrapApplication(AppComponent, {
   providers:[ 
@@ -20,6 +21,7 @@ bootstrapApplication(AppComponent, {
       closeButton: true,
       progressBar: true,
     }),  // Toastr providers
+    provideCharts(withDefaultRegisterables()), // Chart.js providers
   ]
 })
   .catch((err) => console.error(err));

@@ -1,0 +1,9 @@
+<div *ngIf="loading" class="text-center py-8">Loading charts...</div>
+<div *ngIf="error" class="text-center text-red-500 py-8">{{ error }}</div>
+<div *ngIf="!loading && !error">
+  <div class="text-lg font-semibold text-gray-800 mb-4">Charts</div>
+  <div class="charts-container">
+    <app-blood-pressure-chart [vitals]="vitals"></app-blood-pressure-chart>
+    <app-heart-rate-chart [vitals]="vitals"></app-heart-rate-chart>
+  </div>
+</div> 

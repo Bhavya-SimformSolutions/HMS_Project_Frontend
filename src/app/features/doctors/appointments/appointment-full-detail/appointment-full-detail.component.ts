@@ -11,11 +11,12 @@ import { Diagnosis } from '../../../../shared/models/appointment.model';
 import { AddBillModalComponent } from '../bills/add-bill-modal.component';
 import { PatientBillsListComponent } from '../bills/patient-bills-list.component';
 import { GenerateFinalBillModalComponent } from '../bills/generate-final-bill-modal.component';
+import { ChartsComponent } from '../charts/charts.component';
 
 @Component({
   selector: 'app-appointment-full-detail',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, AddVitalsModalComponent, AddDiagnosisModalComponent, RouterModule,AddBillModalComponent,PatientBillsListComponent,GenerateFinalBillModalComponent],
+  imports: [CommonModule, SidebarComponent, AddVitalsModalComponent, AddDiagnosisModalComponent, RouterModule,AddBillModalComponent,PatientBillsListComponent,GenerateFinalBillModalComponent,ChartsComponent],
   templateUrl: './appointment-full-detail.component.html',
   styleUrls: ['./appointment-full-detail.component.css'],
 })

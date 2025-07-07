@@ -1,0 +1,21 @@
+ <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <div class="text-lg font-semibold text-gray-800">Heart Rate</div>
+      <div class="text-sm text-gray-500">
+        Recent: {{ vitals[vitals.length-1]?.heart_rate || 0 }} BPM
+      </div>
+      <div class="text-sm text-gray-500">
+        Average: {{ getAverage('heart_rate') }} BPM
+      </div>
+    </div>
+    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">See Insights</button>
+  </div>
+  <div>
+    <canvas baseChart
+      [data]="chartData"
+      [type]="chartType"
+      [options]="chartOptions">
+    </canvas>
+  </div>
+</div> 
