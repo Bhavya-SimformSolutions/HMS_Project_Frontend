@@ -1,0 +1,8 @@
+<span class="relative inline-block w-full">
+  <ng-content></ng-content>
+  <span *ngIf="unreadCount > 0"
+        class="inline-flex items-center justify-center bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 ml-2">
+    {{ unreadCount }}
+  </span>
+</span>
+<ng-content *ngIf="unreadCount === 0"></ng-content> 

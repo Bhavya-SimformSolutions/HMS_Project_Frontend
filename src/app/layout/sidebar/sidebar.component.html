@@ -23,16 +23,33 @@
         <!-- Links -->
         <div class="space-y-1">
           <ng-container *ngFor="let link of section.links">
-            <a *ngIf="hasAccess(link.access)"
-               [routerLink]="link.href"
-               routerLinkActive="bg-blue-50 text-blue-600"
-               [routerLinkActiveOptions]="{exact: true}"
-               class="group flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200">
-              <span class="material-icons mr-3 text-gray-400 group-hover:text-blue-600 transition-colors duration-200">
-                {{ link.icon }}
-              </span>
-              <span>{{ link.name }}</span>
-            </a>
+            <ng-container *ngIf="link.name === 'Notifications'; else normalLink">
+              <a *ngIf="hasAccess(link.access)"
+                 [routerLink]="link.href"
+                 routerLinkActive="bg-blue-50 text-blue-600"
+                 [routerLinkActiveOptions]="{exact: true}"
+                 class="group flex items-center justify-between px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 relative">
+                <span class="flex items-center">
+                  <span class="material-icons mr-3 text-gray-400 group-hover:text-blue-600 transition-colors duration-200">
+                    {{ link.icon }}
+                  </span>
+                  Notifications
+                </span>
+                <app-notification-badge></app-notification-badge>
+              </a>
+            </ng-container>
+            <ng-template #normalLink>
+              <a *ngIf="hasAccess(link.access)"
+                 [routerLink]="link.href"
+                 routerLinkActive="bg-blue-50 text-blue-600"
+                 [routerLinkActiveOptions]="{exact: true}"
+                 class="group flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200">
+                <span class="material-icons mr-3 text-gray-400 group-hover:text-blue-600 transition-colors duration-200">
+                  {{ link.icon }}
+                </span>
+                <span>{{ link.name }}</span>
+              </a>
+            </ng-template>
           </ng-container>
         </div>
       </div>

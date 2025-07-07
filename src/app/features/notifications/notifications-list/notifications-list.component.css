@@ -1,0 +1,18 @@
+.container {
+  max-width: 700px;
+}
+.bg-white {
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.bg-white:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-color: #2563eb;
+}
+.material-icons {
+  vertical-align: middle;
+}
+@media (max-width: 640px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+} 

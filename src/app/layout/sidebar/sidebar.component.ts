@@ -3,11 +3,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { SIDEBAR_LINKS } from './sidebar-links';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NotificationBadgeComponent } from '../../features/notifications/notification-badge/notification-badge.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule,NotificationBadgeComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })

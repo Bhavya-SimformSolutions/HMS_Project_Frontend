@@ -1,0 +1,43 @@
+<div class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Right Side Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Route Header -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+      <h1 class="text-xl font-semibold text-gray-900">Notifications</h1>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="container mx-auto px-8 py-6">
+        <div *ngIf="loading" class="text-center py-8 text-gray-500">Loading...</div>
+        <div *ngIf="!loading && notifications.length === 0" class="text-center py-8 text-gray-400">
+          <span class="material-icons text-4xl">notifications_off</span>
+          <div>No notifications to show</div>
+        </div>
+        <div class="grid gap-4">
+          <div *ngFor="let notification of notifications" (click)="markAsRead(notification)"
+            class="bg-white rounded-lg shadow-sm p-4 flex flex-col md:flex-row md:items-center cursor-pointer transition hover:shadow-md border-l-4"
+            [ngClass]="notification.isRead ? 'border-gray-200' : 'border-blue-500'">
+            <div class="flex-1">
+              <div class="flex items-center mb-1">
+                <span class="material-icons mr-2 text-blue-500" *ngIf="!notification.isRead">notifications_active</span>
+                <span class="material-icons mr-2 text-gray-400" *ngIf="notification.isRead">notifications</span>
+                <span class="font-medium text-gray-900">{{ notification.title }}</span>
+              </div>
+              <div class="text-gray-700">{{ notification.message }}</div>
+              <div class="text-xs text-gray-400 mt-1">{{ notification.createdAt | date:'short' }}</div>
+            </div>
+            <div *ngIf="notification.link" class="mt-2 md:mt-0 md:ml-4">
+              <a [routerLink]="notification.link" class="text-blue-600 hover:underline text-sm flex items-center">
+                View <span class="material-icons ml-1 text-base">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
