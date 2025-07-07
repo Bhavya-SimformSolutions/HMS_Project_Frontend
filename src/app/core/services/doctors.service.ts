@@ -24,6 +24,16 @@ export interface Doctor {
   password?: string;
 }
 
+export interface DoctorDashboardStats {
+  doctorName: string;
+  totalPatients: number;
+  totalAppointments: number;
+  totalConsultations: number;
+  appointmentsByMonth: { month: string; appointments: number; completed: number }[];
+  workingHoursToday: string;
+  recentAppointments: any[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class DoctorsService {
   private adminUrl = `${environment.apiUrl}/admin/doctors`;
@@ -122,6 +132,12 @@ export class DoctorsService {
 
   getAllServices(): Observable<any[]> {
     return this.http.get<any[]>(`${this.doctorUrl}/services`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  getDoctorDashboardStats(): Observable<DoctorDashboardStats> {
+    return this.http.get<DoctorDashboardStats>(`${this.doctorUrl}/dashboard`, {
       headers: this.getAuthHeaders(),
     });
   }

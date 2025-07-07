@@ -27,4 +27,10 @@ export class AdminService {
       headers: this.getAuthHeaders()
     });
   }
+
+  getAdminDashboardStats(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/admin/dashboard/stats', {
+      headers: this.getAuthHeaders(),
+    });
+  }
 } 

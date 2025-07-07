@@ -156,4 +156,10 @@ export class PatientService {
       })
     );
   }
+
+  getPatientDashboardStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/dashboard`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
 }
