@@ -12,12 +12,6 @@
   display: flex;
   gap: 1rem;
 }
-input[type="text"] {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
 .filter-btn, .add-btn {
   padding: 0.5rem 1.2rem;
   border: none;

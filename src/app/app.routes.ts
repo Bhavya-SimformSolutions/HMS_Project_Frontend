@@ -18,6 +18,9 @@ import { AppointmentFullDetailComponent } from './features/doctors/appointments/
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { ServicesListComponent } from './features/admin/services/services-list.component';
 import { NotificationsListComponent } from './features/notifications/notifications-list/notifications-list.component';
+import { AppointmentsListComponent } from './features/admin/appointments-list/appointments-list.component';
+import { PatientsListComponent } from './features/admin/patients-list/patients-list.component';
+import { DoctorPatientsListComponent } from './features/doctors/patients-list/patients-list.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Homepage
@@ -69,6 +72,21 @@ export const routes: Routes = [
         path: 'notifications',
         component: NotificationsListComponent,
         canActivate: [AuthGuard],
+    },
+    {
+        path: 'record/patients',
+        component: PatientsListComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'doctor/patients',
+        component: DoctorPatientsListComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'record/appointments',
+        component: AppointmentsListComponent,
+        canActivate: [AuthGuard]
     },
     { path: '**', component: NotFoundComponent }, // Redirect invalid routes to home
 ];

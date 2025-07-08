@@ -17,6 +17,11 @@ export class DoctorsListComponent implements OnInit {
   filteredDoctors: (Doctor & { created_at?: string })[] = [];
   search = '';
   showAddDoctor = false;
+  total = 0;
+  page = 1;
+  limit = 10;
+  sortOrder: 'asc' | 'desc' = 'desc';
+  loading = false;
 
   constructor(private doctorsService: DoctorsService) {}
 
@@ -25,20 +30,34 @@ export class DoctorsListComponent implements OnInit {
   }
 
   loadDoctors() {
-    this.doctorsService.getAllDoctors().subscribe(doctors => {
-      this.doctors = doctors;
-      this.filteredDoctors = doctors;
-    });
+    this.loading = true;
+    this.doctorsService.getPaginatedDoctors(this.page, this.limit, this.search, this.sortOrder).subscribe((res: { doctors: Doctor[]; total: number; page: number; limit: number }) => {
+      this.doctors = res.doctors;
+      this.total = res.total;
+      this.filteredDoctors = res.doctors;
+      this.loading = false;
+    }, () => { this.loading = false; });
+  }
+
+  onPageChange(newPage: number) {
+    if (newPage < 1 || newPage > this.totalPages) return;
+    this.page = newPage;
+    this.loadDoctors();
+  }
+
+  get totalPages() {
+    return Math.ceil(this.total / this.limit);
   }
 
   onSearchChange() {
-    const term = this.search.toLowerCase();
-    this.filteredDoctors = this.doctors.filter(d =>
-      d.name.toLowerCase().includes(term) ||
-      d.specialization.toLowerCase().includes(term) ||
-      d.license_number.toLowerCase().includes(term) ||
-      d.email.toLowerCase().includes(term)
-    );
+    this.page = 1;
+    this.loadDoctors();
+  }
+
+  onSortChange(order: 'asc' | 'desc') {
+    this.sortOrder = order;
+    this.page = 1;
+    this.loadDoctors();
   }
 
   openAddDoctor() {
@@ -49,4 +68,4 @@ export class DoctorsListComponent implements OnInit {
     this.showAddDoctor = false;
     if (reload) this.loadDoctors();
   }
-} 
+}

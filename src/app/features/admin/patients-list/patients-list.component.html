@@ -1,4 +1,3 @@
-<!-- Main Layout -->
 <div class="flex h-screen bg-gray-50">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
@@ -7,23 +6,23 @@
   <div class="flex-1 flex flex-col">
     <!-- Route Header -->
     <div class="bg-white border-b border-gray-200 px-8 py-4">
-      <h1 class="text-xl font-semibold text-gray-900">Doctors</h1>
+      <h1 class="text-xl font-semibold text-gray-900">Patients</h1>
     </div>
 
     <!-- Main Content Area -->
     <div class="flex-1 overflow-y-auto">
       <div class="container mx-auto px-8 py-6">
-        <!-- Top Bar: Search & Stats -->
+        <!-- Top Bar: Search & Sort & Stats -->
         <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <!-- Stats Bar -->
             <div class="flex items-center space-x-4">
               <div class="bg-blue-50 px-4 py-2 rounded-lg">
-                <span class="text-sm text-gray-500">Total Doctors</span>
-                <p class="text-lg font-semibold text-blue-600">{{ filteredDoctors.length }}</p>
+                <span class="text-sm text-gray-500">Total Patients</span>
+                <p class="text-lg font-semibold text-blue-600">{{ total }}</p>
               </div>
             </div>
-            <!-- Search & Sort & Add -->
+            <!-- Search & Sort -->
             <div class="flex items-center space-x-4">
               <!-- Search -->
               <div class="relative">
@@ -32,76 +31,71 @@
                 </span>
                 <input
                   type="text"
-                  [value]="search"
-                  (input)="search = $any($event.target).value; onSearchChange()"
-                  placeholder="Search doctors..."
+                  [value]="searchTerm"
+                  (input)="onSearch($any($event.target).value)"
+                  placeholder="Search patients..."
                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
                 />
               </div>
-              <!-- Sort Dropdown -->
               <div>
-                <label class="mr-2 text-gray-600 text-sm">Sort by Joining:</label>
+                <label class="mr-2 text-gray-600 text-sm">Sort by Registration:</label>
                 <select [value]="sortOrder" (change)="onSortChange($any($event.target).value)" class="border border-gray-300 rounded-lg px-2 py-1">
                   <option value="desc">Newest First</option>
                   <option value="asc">Oldest First</option>
                 </select>
               </div>
-              <!-- Add Doctor Button -->
-              <button
-                (click)="openAddDoctor()"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <i class="material-icons mr-2">add</i>
-                Add Doctor
-              </button>
             </div>
           </div>
         </div>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
         <!-- Table -->
-        <div class="bg-white rounded-lg shadow-sm overflow-visible">
+        <div *ngIf="!loading" class="bg-white rounded-lg shadow-sm overflow-visible patients-table-container">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Info</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">License #</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blood Group</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered At</th>
                 <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr *ngFor="let doctor of filteredDoctors" class="hover:bg-gray-50">
+            <tbody>
+              <tr *ngFor="let patient of patients" class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
-                      <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-lg font-bold">
-                        {{ doctor.name.charAt(0) }}
-                      </div>
+                      <ng-container *ngIf="patient.img; else initialsAvatar">
+                        <img [src]="getPatientImgUrl(patient.img)" alt="Profile" class="h-10 w-10 rounded-full object-cover" />
+                      </ng-container>
+                      <ng-template #initialsAvatar>
+                        <div class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-blue-600 font-semibold">
+                          {{ (patient.first_name.charAt(0) + (patient.last_name ? patient.last_name.charAt(0) : '')) }}
+                        </div>
+                      </ng-template>
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">{{ doctor.name }}</div>
-                      <div class="text-sm text-gray-500">{{ doctor.specialization }}</div>
+                      <div class="text-sm font-medium text-gray-900">{{ patient.first_name }} {{ patient.last_name }}</div>
+                      <div class="text-sm text-gray-500">{{ patient.email }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ doctor.license_number }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ doctor.phone }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ doctor.email }}</td>
-                <td class="px-6 py-4 whitespace-nowrap">{{ doctor.created_at | date:'dd-MM-yyyy' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.phone || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.blood_group || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.gender || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.created_at | date:'dd-MM-yyyy' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div class="relative inline-block text-left">
-                    <button class="inline-flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
-                      <i class="material-icons">more_vert</i>
-                    </button>
-                    <!-- Dropdown menu for actions can be added here -->
-                  </div>
+                  <button class="inline-flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <i class="material-icons">more_vert</i>
+                  </button>
                 </td>
               </tr>
-              <tr *ngIf="filteredDoctors.length === 0">
-                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                  No doctors found
-                </td>
+              <tr *ngIf="!loading && patients.length === 0">
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No patients found</td>
               </tr>
             </tbody>
           </table>
@@ -118,6 +112,3 @@
     </div>
   </div>
 </div>
-
-<!-- Add Doctor Drawer/Modal -->
-<app-add-doctor *ngIf="showAddDoctor" (close)="closeAddDoctor($event)"></app-add-doctor>
