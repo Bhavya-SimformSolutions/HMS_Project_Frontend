@@ -145,9 +145,9 @@
             <h3 class="text-base font-semibold text-gray-800 mb-4">Quick Links</h3>
             <div class="grid grid-cols-2 gap-3 text-sm">
               <button (click)="setActiveTab('charts')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'charts', 'bg-gray-100 text-gray-700': activeTab !== 'charts'}" class="px-3 py-2 rounded-md transition-colors text-center">Charts</button>
-              <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Appointment</button>
+              <!-- <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Appointment</button> -->
               <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Medical History</button>
-              <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Lab Tests</button>
+              <!-- <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Lab Tests</button> -->
               <button (click)="setActiveTab('diagnosis')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'diagnosis', 'bg-gray-100 text-gray-700': activeTab !== 'diagnosis'}" class="px-3 py-2 rounded-md transition-colors text-center">Diagnosis</button>
               <button (click)="setActiveTab('vitals')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'vitals', 'bg-gray-100 text-gray-700': activeTab !== 'vitals'}" class="px-3 py-2 rounded-md transition-colors text-center">Vital Signs</button>
               <button (click)="setActiveTab('bills')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'bills', 'bg-gray-100 text-gray-700': activeTab !== 'bills'}" class="px-3 py-2 rounded-md transition-colors text-center">Medical Bills</button>

@@ -1,0 +1,110 @@
+<div class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Right Side Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Route Header -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+      <h1 class="text-xl font-semibold text-gray-900">Patients</h1>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="container mx-auto px-8 py-6">
+        <!-- Top Bar: Search & Sort -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <div class="bg-blue-50 px-4 py-2 rounded-lg">
+                <span class="text-sm text-gray-500">Total Patients</span>
+                <p class="text-lg font-semibold text-blue-600">{{ total }}</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <!-- Search -->
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <i class="material-icons text-gray-400 text-lg">search</i>
+                </span>
+                <input
+                  type="text"
+                  [value]="searchTerm"
+                  (input)="onSearch($any($event.target).value)"
+                  placeholder="Search patients..."
+                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
+                />
+              </div>
+              <div>
+                <label class="mr-2 text-gray-600 text-sm">Sort by Registration:</label>
+                <select [value]="sortOrder" (change)="onSortChange($any($event.target).value)" class="border border-gray-300 rounded-lg px-2 py-1">
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+        <!-- Table -->
+        <div *ngIf="!loading" class="bg-white rounded-lg shadow-sm overflow-visible patients-table-container">
+          <table class="patients-table min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Info</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blood Group</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered At</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let patient of patients" class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="patient-info">
+                    <div class="avatar">
+                      <ng-container *ngIf="patient.img; else initialsAvatar">
+                        <img [src]="getPatientImgUrl(patient.img)" alt="Profile" class="h-full w-full rounded-full object-cover" />
+                      </ng-container>
+                      <ng-template #initialsAvatar>
+                        {{ (patient.first_name.charAt(0) + (patient.last_name ? patient.last_name.charAt(0) : '')) }}
+                      </ng-template>
+                    </div>
+                    <div>
+                      <div class="patient-name">{{ patient.first_name }} {{ patient.last_name }}</div>
+                      <div class="patient-email">{{ patient.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.phone || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.blood_group || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.gender || '-' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ patient.created_at | date:'dd-MM-yyyy' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button class="inline-flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <i class="material-icons">more_vert</i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="!loading && patients.length === 0">
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500">No patients found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination Controls -->
+        <div class="flex justify-center items-center mt-6">
+          <button (click)="onPageChange(page - 1)" [disabled]="page === 1" class="px-3 py-1 mx-1 rounded border bg-gray-100 hover:bg-gray-200">Prev</button>
+          <ng-container *ngFor="let p of [].constructor(totalPages); let i = index">
+            <button (click)="onPageChange(i + 1)" [class.bg-blue-500]="page === (i + 1)" [class.text-white]="page === (i + 1)" class="px-3 py-1 mx-1 rounded border">{{ i + 1 }}</button>
+          </ng-container>
+          <button (click)="onPageChange(page + 1)" [disabled]="page === totalPages" class="px-3 py-1 mx-1 rounded border bg-gray-100 hover:bg-gray-200">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

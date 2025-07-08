@@ -141,4 +141,28 @@ export class DoctorsService {
       headers: this.getAuthHeaders(),
     });
   }
-} 
+
+  /**
+   * Fetch paginated, searchable, filterable patients for the logged-in doctor
+   */
+  getPaginatedDoctorPatients(page: number = 1, limit: number = 10, search: string = ''): Observable<{ patients: any[]; total: number; page: number; limit: number }> {
+    let params: any = { page, limit };
+    if (search) params.search = search;
+    return this.http.get<{ patients: any[]; total: number; page: number; limit: number }>(
+      `${this.doctorUrl}/patients`,
+      { headers: this.getAuthHeaders(), params }
+    );
+  }
+
+  /**
+   * Get paginated, searchable, sortable doctors for admin
+   */
+  getPaginatedDoctors(page: number = 1, limit: number = 10, search: string = '', sortOrder: 'asc' | 'desc' = 'desc') {
+    const params: any = { page, limit, sortOrder };
+    if (search) params.search = search;
+    return this.http.get<{ doctors: Doctor[]; total: number; page: number; limit: number }>(
+      this.adminUrl,
+      { headers: this.getAuthHeaders(), params }
+    );
+  }
+}
