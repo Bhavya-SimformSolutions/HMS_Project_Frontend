@@ -1,2 +1,2 @@
 /* Use the same style as add-bill-modal for consistency */
-@import './add-bill-modal.component.css'; 
+/* Removed recursive import to fix maximum recursion depth error */

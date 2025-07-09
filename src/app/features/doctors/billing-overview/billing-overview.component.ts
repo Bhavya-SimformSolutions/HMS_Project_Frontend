@@ -82,7 +82,7 @@ export class BillingOverviewComponent implements OnInit {
   }
 
   getDiscount(group: any): number {
-    // Find the first bill with a discount (if any), fallback to 0
+    // Get discount from the payment object of the first bill in the group
     return group.bills[0]?.discount || 0;
   }
 
