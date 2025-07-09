@@ -165,4 +165,34 @@ export class DoctorsService {
       { headers: this.getAuthHeaders(), params }
     );
   }
+
+  /**
+   * Get paginated, searchable, sortable bills for doctor billing overview
+   */
+  getPaginatedDoctorBilling(page: number = 1, limit: number = 10, search: string = '', sortOrder: 'asc' | 'desc' = 'desc') {
+    const params: any = { page, limit, sortOrder };
+    if (search) params.search = search;
+    return this.http.get<{ bills: any[]; total: number; page: number; limit: number }>(
+      `${this.doctorUrl}/billing`,
+      { headers: this.getAuthHeaders(), params }
+    );
+  }
+
+  /**
+   * Edit the final bill summary (discount, bill_date)
+   */
+  editFinalBillSummary(appointmentId: number, data: any): Observable<any> {
+    return this.http.patch<any>(`${this.doctorUrl}/appointments/${appointmentId}/final-bill`, data, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  /**
+   * Edit an individual bill in a finalized payment
+   */
+  editBillInAppointment(appointmentId: number, billId: number, data: any): Observable<any> {
+    return this.http.patch<any>(`${this.doctorUrl}/appointments/${appointmentId}/bills/${billId}`, data, {
+      headers: this.getAuthHeaders(),
+    });
+  }
 }

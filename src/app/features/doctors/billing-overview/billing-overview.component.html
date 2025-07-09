@@ -1,0 +1,148 @@
+<div class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Right Side Content -->
+  <div class="flex-1 flex flex-col">
+    <!-- Route Header -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+      <h1 class="text-xl font-semibold text-gray-900">Billing Overview</h1>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 overflow-y-auto">
+      <div class="container mx-auto px-8 py-6">
+        <!-- Top Bar: Search & Sort -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-center space-x-4">
+              <div class="bg-blue-50 px-4 py-2 rounded-lg">
+                <span class="text-sm text-gray-500">Total Patients</span>
+                <p class="text-lg font-semibold text-blue-600">{{ total }}</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <!-- Search -->
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <i class="material-icons text-gray-400 text-lg">search</i>
+                </span>
+                <input
+                  type="text"
+                  [value]="search"
+                  (input)="onSearchChange()"
+                  placeholder="Search patients or bills..."
+                  class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
+                />
+              </div>
+              <div>
+                <label class="mr-2 text-gray-600 text-sm">Sort by Bill Date:</label>
+                <select [value]="sortOrder" (change)="onSortChange($any($event.target).value)" class="border border-gray-300 rounded-lg px-2 py-1">
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center items-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+        <!-- Table -->
+        <div *ngIf="!loading" class="bg-white rounded-lg shadow-sm overflow-visible patients-table-container">
+          <table class="patients-table min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Info</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Bill</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount (%)</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payable</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bill Date</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let group of groupedPatients">
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="patient-info">
+                      <div class="avatar">
+                        <ng-container *ngIf="group.patient.img; else initialsAvatar">
+                          <img [src]="getPatientImgUrl(group.patient.img)" alt="Profile" />
+                        </ng-container>
+                        <ng-template #initialsAvatar>
+                          {{ (group.patient.first_name.charAt(0) + (group.patient.last_name ? group.patient.last_name.charAt(0) : '')) }}
+                        </ng-template>
+                      </div>
+                      <div>
+                        <div class="patient-name">{{ group.patient.first_name }} {{ group.patient.last_name }}</div>
+                        <div class="patient-email">{{ group.patient.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ getTotalBill(group.bills) | number:'1.2-2' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ getDiscount(group) | number:'1.2-2' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">{{ getPayable(group) | number:'1.2-2' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span [ngClass]="{
+                      'bg-green-100 text-green-700 status-badge': group.bills[0]?.status === 'PAID',
+                      'bg-yellow-100 text-yellow-700 status-badge': group.bills[0]?.status === 'PARTIAL',
+                      'bg-red-100 text-red-700 status-badge': group.bills[0]?.status === 'UNPAID'
+                    }">
+                      {{ group.bills[0]?.status }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-400">{{ group.bills[0]?.billDate | date:'dd-MM-yyyy' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="inline-flex items-center text-blue-600 hover:text-blue-800 focus:outline-none" (click)="toggleAccordion(group.patient.id)">
+                      <span class="material-icons accordion-arrow" [class.open]="isAccordionOpen(group.patient.id)">{{ isAccordionOpen(group.patient.id) ? 'expand_less' : 'expand_more' }}</span>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="isAccordionOpen(group.patient.id)" class="accordion-row">
+                  <td colspan="7" class="p-0 border-0">
+                    <div class="accordion-content">
+                      <table class="w-full text-sm mb-2">
+                        <thead>
+                          <tr>
+                            <th class="text-left px-2 py-1">Service</th>
+                            <th class="text-left px-2 py-1">Date</th>
+                            <th class="text-left px-2 py-1">Quantity</th>
+                            <th class="text-left px-2 py-1">Unit Cost</th>
+                            <th class="text-left px-2 py-1">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let bill of group.bills">
+                            <td class="px-2 py-1">{{ bill.serviceName }}</td>
+                            <td class="px-2 py-1">{{ bill.serviceDate | date:'dd-MM-yyyy' }}</td>
+                            <td class="px-2 py-1">{{ bill.quantity }}</td>
+                            <td class="px-2 py-1">{{ bill.unitCost | number:'1.2-2' }}</td>
+                            <td class="px-2 py-1">{{ bill.totalCost | number:'1.2-2' }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              <tr *ngIf="!loading && groupedPatients.length === 0">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No billing data found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination Controls -->
+        <div class="flex justify-center items-center mt-6">
+          <button (click)="onPageChange(page - 1)" [disabled]="page === 1" class="px-3 py-1 mx-1 rounded border bg-gray-100 hover:bg-gray-200">Prev</button>
+          <ng-container *ngFor="let p of [].constructor(totalPages); let i = index">
+            <button (click)="onPageChange(i + 1)" [class.bg-blue-500]="page === (i + 1)" [class.text-white]="page === (i + 1)" class="px-3 py-1 mx-1 rounded border">{{ i + 1 }}</button>
+          </ng-container>
+          <button (click)="onPageChange(page + 1)" [disabled]="page === totalPages" class="px-3 py-1 mx-1 rounded border bg-gray-100 hover:bg-gray-200">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -32,6 +32,8 @@ export class AppointmentFullDetailComponent implements OnInit {
   showAddBillModal = false;
   showGenerateFinalBillModal = false;
   billsTotal = 0;
+  billsRefreshTrigger = 0; // Used to trigger bills list refresh
+  userRole = 'doctor'; // TODO: Replace with actual role from auth service
 
   constructor(
     private route: ActivatedRoute,
@@ -123,6 +125,9 @@ export class AppointmentFullDetailComponent implements OnInit {
 
   closeAddBillModal(refresh: boolean) {
     this.showAddBillModal = false;
+    if (refresh) {
+      this.billsRefreshTrigger++;
+    }
   }
 
   openGenerateFinalBillModal() {
@@ -131,11 +136,13 @@ export class AppointmentFullDetailComponent implements OnInit {
 
   closeGenerateFinalBillModal(refresh: boolean) {
     this.showGenerateFinalBillModal = false;
+    if (refresh) {
+      this.billsRefreshTrigger++;
+    }
   }
 
   onBillsChanged() {
-    // This will be called when bills are added/deleted/generated
-    // You may want to fetch the latest total from the child or recalculate
-    // For now, just trigger change detection or fetch if needed
+    // Increment the key to force PatientBillsListComponent to reload
+    this.billsRefreshTrigger++;
   }
 }

@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DoctorsService } from '../../../../core/services/doctors.service';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-generate-final-bill-modal',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './generate-final-bill-modal.component.html',
   styleUrls: ['./generate-final-bill-modal.component.css']
 })
@@ -45,4 +46,9 @@ export class GenerateFinalBillModalComponent {
   onClose() {
     this.close.emit(false);
   }
-} 
+
+  get payable(): number {
+    const discountAmount = (this.totalBill * (this.discount || 0)) / 100;
+    return this.totalBill - discountAmount;
+  }
+}

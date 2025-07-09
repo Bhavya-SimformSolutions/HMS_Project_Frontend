@@ -1,0 +1,71 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 bg-black/40 z-40 backdrop-blur-sm" (click)="onCancel()"></div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl p-8 relative">
+    <button (click)="onCancel()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+      <span class="material-icons">close</span>
+    </button>
+    <h2 class="text-xl font-bold mb-2">Edit Final Bill</h2>
+    <form (ngSubmit)="onSave()" class="space-y-4">
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+          <input type="number" [(ngModel)]="discount" name="discount" min="0" max="100" class="w-full border border-gray-300 rounded-lg p-2" />
+        </div>
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bill Date</label>
+          <input type="date" [(ngModel)]="billDate" name="billDate" required class="w-full border border-gray-300 rounded-lg p-2" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Bills</label>
+        <table class="w-full text-sm border rounded-lg overflow-hidden mb-2">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-3 py-2 text-left">Service</th>
+              <th class="px-3 py-2 text-left">Date</th>
+              <th class="px-3 py-2 text-left">Quantity</th>
+              <th class="px-3 py-2 text-left">Unit Cost</th>
+              <th class="px-3 py-2 text-left">Total Cost</th>
+              <th class="px-3 py-2 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let bill of editableBills; let i = index">
+              <td class="px-3 py-2">
+                <select [(ngModel)]="bill.service_id" name="service_{{i}}" required class="border border-gray-300 rounded-lg p-2 w-full" (ngModelChange)="onServiceChange(bill)" (blur)="onServiceBlur(bill)">
+                  <option [ngValue]="null" disabled>Select service</option>
+                  <option *ngFor="let service of services" [ngValue]="service.id">{{ service.service_name }}</option>
+                </select>
+                <div *ngIf="bill.touched && bill.service_id === null" class="text-xs text-red-500 mt-1">Service is required.</div>
+              </td>
+              <td class="px-3 py-2">
+                <input type="date" [(ngModel)]="bill.service_date" name="serviceDate_{{i}}" required class="border border-gray-300 rounded-lg p-2 w-full" [readonly]="bill.id" />
+              </td>
+              <td class="px-3 py-2">
+                <input type="number" [(ngModel)]="bill.quantity" name="quantity_{{i}}" min="1" required class="border border-gray-300 rounded-lg p-2 w-full" (ngModelChange)="updateBillTotal(bill)" />
+              </td>
+              <td class="px-3 py-2">
+                <input type="number" [(ngModel)]="bill.unit_cost" name="unitCost_{{i}}" min="0" required class="border border-gray-300 rounded-lg p-2 w-full" [readonly]="true" />
+              </td>
+              <td class="px-3 py-2">{{ bill.total_cost | number:'1.2-2' }}</td>
+              <td class="px-3 py-2">
+                <button type="button" (click)="removeBillRow(i)" class="text-red-500 hover:text-red-700" title="Delete" [disabled]="editableBills.length === 1"><span class="material-icons">delete</span></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" (click)="addBillRow()" class="px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200 transition">+ Add Bill</button>
+      </div>
+      <div *ngIf="errorMessage" class="text-xs text-red-500 mt-1">{{ errorMessage }}</div>
+      <div class="flex justify-end gap-2 mt-6">
+        <button type="button" (click)="onCancel()" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 bg-white hover:bg-gray-50">Cancel</button>
+        <button type="submit" [disabled]="isSubmitting" class="px-6 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-60">
+          {{ isSubmitting ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

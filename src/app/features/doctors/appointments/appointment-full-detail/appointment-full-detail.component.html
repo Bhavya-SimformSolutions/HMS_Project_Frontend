@@ -127,7 +127,7 @@
 
           <!-- BILLS TAB: Bills Section -->
           <ng-container *ngIf="activeTab === 'bills'">
-            <app-patient-bills-list [appointmentId]="appointment.id" (addBill)="openAddBillModal()" (generateFinalBill)="openGenerateFinalBillModal()" (billsChanged)="onBillsChanged()" (totalBillChange)="billsTotal = $event"></app-patient-bills-list>
+            <app-patient-bills-list [appointmentId]="appointment.id" [appointmentStatus]="appointment.status" [refreshTrigger]="billsRefreshTrigger" (addBill)="openAddBillModal()" (generateFinalBill)="openGenerateFinalBillModal()" (billsChanged)="onBillsChanged()" (totalBillChange)="billsTotal = $event" [userRole]="userRole"></app-patient-bills-list>
           </ng-container>
 
           <!-- CHARTS TAB: Charts Section -->
@@ -204,7 +204,7 @@
 </app-add-diagnosis-modal>
 
 <!-- Add Bill Modal -->
-<app-add-bill-modal *ngIf="showAddBillModal && appointment" [appointmentId]="appointment.id" (close)="closeAddBillModal($event)" (billAdded)="onBillsChanged()"></app-add-bill-modal>
+<app-add-bill-modal *ngIf="showAddBillModal && appointment" [appointmentId]="appointment.id" (close)="closeAddBillModal($event)"></app-add-bill-modal>
 
 <!-- Generate Final Bill Modal -->
 <app-generate-final-bill-modal *ngIf="showGenerateFinalBillModal && appointment" [appointmentId]="appointment.id" [totalBill]="billsTotal" (close)="closeGenerateFinalBillModal($event)"></app-generate-final-bill-modal>
