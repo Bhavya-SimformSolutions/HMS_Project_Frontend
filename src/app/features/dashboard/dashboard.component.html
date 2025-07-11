@@ -211,11 +211,11 @@
               <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex flex-col md:flex-row items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                   <span class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-700 font-bold text-xl">
-                    {{ patientStats.nextAppointment.doctor.name.split(' ')[0].charAt(0) }}{{ patientStats.nextAppointment.doctor.name.split(' ')[1]?.charAt(0) || '' }}
+                    {{ patientStats.nextAppointment?.doctor?.name?.split(' ')[0]?.charAt(0) || '?' }}{{ patientStats.nextAppointment?.doctor?.name?.split(' ')[1]?.charAt(0) || '' }}
                   </span>
                   <div>
-                    <div class="font-semibold text-gray-900 text-lg">Dr. {{ patientStats.nextAppointment.doctor.name }}</div>
-                    <div class="text-sm text-gray-500">{{ patientStats.nextAppointment.doctor.specialization }}</div>
+                    <div class="font-semibold text-gray-900 text-lg">Dr. {{ patientStats.nextAppointment?.doctor?.name || 'N/A' }}</div>
+                    <div class="text-sm text-gray-500">{{ patientStats.nextAppointment?.doctor?.specialization || 'N/A' }}</div>
                   </div>
                 </div>
                 <div class="flex flex-col md:flex-row items-center gap-6 mt-4 md:mt-0">

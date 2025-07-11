@@ -65,9 +65,12 @@
                   <input type="text"
                          id="first_name"
                          formControlName="first_name"
+                         [readonly]="isFieldDisabled('first_name')"
+                         [ngClass]="{'bg-gray-100 cursor-not-allowed opacity-80': isFieldDisabled('first_name')}"
                          [class.border-red-500]="hasError('first_name')"
                          class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-white/50 placeholder-gray-400"
                          placeholder="Enter your first name"/>
+                  <span *ngIf="isFieldDisabled('first_name')" class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">lock</span>
                 </div>
                 <div *ngIf="hasError('first_name')" class="mt-2 text-sm text-red-500 flex items-center">
                   <span class="material-icons text-sm mr-1">error</span>
@@ -86,9 +89,12 @@
                   <input type="text"
                          id="last_name"
                          formControlName="last_name"
+                         [readonly]="isFieldDisabled('last_name')"
+                         [ngClass]="{'bg-gray-100 cursor-not-allowed opacity-80': isFieldDisabled('last_name')}"
                          [class.border-red-500]="hasError('last_name')"
                          class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 bg-white/50 placeholder-gray-400"
                          placeholder="Enter your last name"/>
+                  <span *ngIf="isFieldDisabled('last_name')" class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">lock</span>
                 </div>
                 <div *ngIf="hasError('last_name')" class="mt-2 text-sm text-red-500 flex items-center">
                   <span class="material-icons text-sm mr-1">error</span>

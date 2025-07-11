@@ -34,12 +34,12 @@ export class PatientRegisterComponent implements OnInit {
     private authService: AuthService
   ) {
     this.registrationForm = this.fb.group({
-      first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
+      first_name: [{ value: '', disabled: true }, Validators.required],
+      last_name: [{ value: '', disabled: true }, Validators.required],
       date_of_birth: ['', Validators.required],
       gender: ['', Validators.required],
       phone: ['', [Validators.required, Validators.minLength(10)]],
-      email: ['', [Validators.required, Validators.email]],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       marital_status: ['', Validators.required],
       address: ['', Validators.required],
       emergency_contact_name: ['', Validators.required],
@@ -62,6 +62,30 @@ export class PatientRegisterComponent implements OnInit {
   ngOnInit(): void {
     this.checkAccess();
     this.checkRegistrationStatus();
+    // Prefill and disable first_name, last_name, email from AuthService if present
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      if (user.firstName) {
+        this.registrationForm.patchValue({ first_name: user.firstName });
+        this.registrationForm.get('first_name')?.disable();
+      } else {
+        this.registrationForm.get('first_name')?.enable(); // allow entry if missing
+      }
+      if (user.lastName) {
+        this.registrationForm.patchValue({ last_name: user.lastName });
+        this.registrationForm.get('last_name')?.disable();
+      } else {
+        this.registrationForm.get('last_name')?.enable(); // allow entry if missing
+      }
+      if (user.email) {
+        this.registrationForm.patchValue({ email: user.email });
+        this.registrationForm.get('email')?.disable();
+      }
+    }
+  }
+
+  isFieldDisabled(field: string): boolean {
+    return this.registrationForm.get(field)?.disabled ?? false;
   }
 
   /**
@@ -103,7 +127,7 @@ export class PatientRegisterComponent implements OnInit {
     if (this.registrationForm.valid) {
       this.isSubmitting = true;
       
-      const formData = this.registrationForm.value;
+      const formData = this.registrationForm.getRawValue(); // FIX: include disabled fields
       delete formData.img;
 
       this.patientService.registerPatient(formData, this.selectedImageFile || undefined).subscribe({

@@ -21,13 +21,13 @@
               <div class="bg-white rounded-lg shadow-sm p-6 w-80">
                 <div class="flex flex-col items-center text-center">
                   <div class="w-24 h-24 rounded-full bg-pink-200 flex items-center justify-center text-2xl font-semibold text-pink-600 mb-4">
-                      <img *ngIf="profile.img" [src]="'http://localhost:3000' + profile.img" alt="Profile Image" class="w-full h-full object-cover rounded-full">
-                      <span *ngIf="!profile.img">{{ profile.name ? profile.name[0] : 'P' }}</span>
+                      <img *ngIf="profile?.img" [src]="'http://localhost:3000' + profile.img" alt="Profile Image" class="w-full h-full object-cover rounded-full">
+                      <span *ngIf="!profile?.img">{{ profile?.name ? profile.name[0] : 'P' }}</span>
                     </div>
-                  <h1 class="text-2xl font-semibold text-gray-900 mb-1">{{ profile.name }}</h1>
-                  <p class="text-gray-600 mb-4">{{ profile.email }}</p>
+                  <h1 class="text-2xl font-semibold text-gray-900 mb-1">{{ profile?.name }}</h1>
+                  <p class="text-gray-600 mb-4">{{ profile?.email }}</p>
                   <div class="bg-gray-50 px-8 py-3 rounded-lg w-full">
-                    <div class="text-3xl font-bold text-gray-900">{{ profile.appointments || 0 }}</div>
+                    <div class="text-3xl font-bold text-gray-900">{{ profile?.appointments || 0 }}</div>
                     <div class="text-sm text-gray-600">Appointments</div>
                   </div>
                 </div>
@@ -36,41 +36,41 @@
               <!-- Profile Information Grid -->
               <div class="bg-white rounded-lg shadow-sm p-6 flex-1">
                 <div class="grid grid-cols-3 gap-6 profile-info">
-                  <div class="space-y-2" *ngIf="profile.gender">
+                  <div class="space-y-2" *ngIf="profile?.gender">
                     <div class="text-sm text-gray-500">Gender</div>
-                    <div class="font-medium">{{ profile.gender }}</div>
+                    <div class="font-medium">{{ profile?.gender }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.dateOfBirth">
+                  <div class="space-y-2" *ngIf="profile?.dateOfBirth">
                     <div class="text-sm text-gray-500">Date of Birth</div>
-                    <div class="font-medium">{{ profile.dateOfBirth | date: 'longDate' }}</div>
+                    <div class="font-medium">{{ profile?.dateOfBirth | date: 'longDate' }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.phoneNumber">
+                  <div class="space-y-2" *ngIf="profile?.phoneNumber">
                     <div class="text-sm text-gray-500">Phone Number</div>
-                    <div class="font-medium">{{ profile.phoneNumber }}</div>
+                    <div class="font-medium">{{ profile?.phoneNumber }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.maritalStatus">
+                  <div class="space-y-2" *ngIf="profile?.maritalStatus">
                     <div class="text-sm text-gray-500">Marital Status</div>
-                    <div class="font-medium">{{ profile.maritalStatus }}</div>
+                    <div class="font-medium">{{ profile?.maritalStatus }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.bloodGroup">
+                  <div class="space-y-2" *ngIf="profile?.bloodGroup">
                     <div class="text-sm text-gray-500">Blood Group</div>
-                    <div class="font-medium">{{ profile.bloodGroup }}</div>
+                    <div class="font-medium">{{ profile?.bloodGroup }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.address">
+                  <div class="space-y-2" *ngIf="profile?.address">
                     <div class="text-sm text-gray-500">Address</div>
-                    <div class="font-medium">{{ profile.address }}</div>
+                    <div class="font-medium">{{ profile?.address }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.contactPerson">
+                  <div class="space-y-2" *ngIf="profile?.contactPerson">
                     <div class="text-sm text-gray-500">Contact Person</div>
-                    <div class="font-medium">{{ profile.contactPerson }}</div>
+                    <div class="font-medium">{{ profile?.contactPerson }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.emergencyContact">
+                  <div class="space-y-2" *ngIf="profile?.emergencyContact">
                     <div class="text-sm text-gray-500">Emergency Contact</div>
-                    <div class="font-medium">{{ profile.emergencyContact }}</div>
+                    <div class="font-medium">{{ profile?.emergencyContact }}</div>
                   </div>
-                  <div class="space-y-2" *ngIf="profile.lastVisit">
+                  <div class="space-y-2" *ngIf="profile?.lastVisit">
                     <div class="text-sm text-gray-500">Last Visit</div>
-                    <div class="font-medium">{{ profile.lastVisit | date: 'longDate' }}</div>
+                    <div class="font-medium">{{ profile?.lastVisit | date: 'longDate' }}</div>
                   </div>
                 </div>
               </div>
@@ -120,7 +120,7 @@
               <h2 class="text-lg font-semibold mb-4">Quick Links</h2>
               <div class="grid grid-cols-2 gap-3">
                 <a routerLink="/appointments" class="px-4 py-2.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-md text-sm font-medium">
-                  Patient's Appointments
+                  Appointments
                 </a>
                 <a routerLink="/medical-records" class="px-4 py-2.5 bg-violet-50 hover:bg-violet-100 text-violet-700 rounded-md text-sm font-medium">
                   Medical Records
@@ -130,9 +130,6 @@
                 </a>
                 <a routerLink="/dashboard" class="px-4 py-2.5 bg-pink-50 hover:bg-pink-100 text-pink-700 rounded-md text-sm font-medium">
                   Dashboard
-                </a>
-                <a routerLink="/lab-test" class="px-4 py-2.5 bg-pink-50 hover:bg-pink-100 text-pink-700 rounded-md text-sm font-medium">
-                  Lab Test & Result
                 </a>
                 <a routerLink="/edit-info" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-sm font-medium col-span-2">
                   Edit Information

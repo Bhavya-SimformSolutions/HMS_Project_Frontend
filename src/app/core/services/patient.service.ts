@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { AuthService,PatientDetails } from './auth.service';
+import { AuthService, PatientDetails } from './auth.service';
 
 export interface PatientRegistrationData {
   first_name: string;
@@ -33,13 +33,13 @@ export interface PatientRegistrationData {
   providedIn: 'root',
 })
 export class PatientService {
-  private readonly apiUrl = 'http://localhost:3000/patient'; 
+  private readonly apiUrl = 'http://localhost:3000/patient';
 
-  constructor(private http: HttpClient,private authService : AuthService) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   /**
    * Gets the authorization headers with the token from localStorage.
-   * 
+   *
    * @returns An instance of HttpHeaders with the Authorization header.
    */
   private getAuthHeaders(): HttpHeaders {
@@ -51,58 +51,68 @@ export class PatientService {
 
   /**
    * Registers a new patient with the provided data and optional image file.
-   * 
+   *
    * @param patientData - The patient's registration data.
    * @param imageFile - An optional image file for the patient's profile.
    * @returns An observable of the registration response.
    */
-  registerPatient(patientData: PatientRegistrationData, imageFile?: File): Observable<any> {
+  registerPatient(
+    patientData: PatientRegistrationData,
+    imageFile?: File
+  ): Observable<any> {
     const formData = this.createFormData(patientData, imageFile);
-  
-    return this.http.post(`${this.apiUrl}/register`, formData, {
-      headers: this.getAuthHeaders(),
-    }).pipe(
-      tap((response: any) => {
-        // Update the BehaviorSubject in AuthService with the registered patient details
-        const patientData: PatientDetails = {
-          firstName: response.patient.first_name,
-          lastName: response.patient.last_name,
-          gender: response.patient.gender,
-        };
-        this.authService.updatePatientDetails(patientData);
-      }),
-      catchError((error) => {
-        console.error('Patient registration failed:', error);
-        return of(null); // Return null in case of an error
+
+    return this.http
+      .post(`${this.apiUrl}/register`, formData, {
+        headers: this.getAuthHeaders(),
       })
-    );
+      .pipe(
+        tap((response: any) => {
+          // Update the BehaviorSubject in AuthService with the registered patient details
+          const patientData: PatientDetails = {
+            firstName: response.patient.first_name,
+            lastName: response.patient.last_name,
+            gender: response.patient.gender,
+          };
+          this.authService.updatePatientDetails(patientData);
+        }),
+        catchError((error) => {
+          console.error('Patient registration failed:', error);
+          return of(null); // Return null in case of an error
+        })
+      );
   }
 
   /**
    * Checks if the patient is already registered.
-   * 
+   *
    * @returns An observable that emits `true` if the patient is registered, `false` otherwise.
    */
   checkPatientRegistration(): Observable<boolean> {
-    return this.http.get<{ isRegistered: boolean }>(`${this.apiUrl}/check-registration`, {
-      headers: this.getAuthHeaders(),
-    }).pipe(
-      map((response) => response.isRegistered),
-      catchError((error) => {
-        console.error('Error checking patient registration:', error);
-        return of(false); // Return false in case of an error
+    return this.http
+      .get<{ isRegistered: boolean }>(`${this.apiUrl}/check-registration`, {
+        headers: this.getAuthHeaders(),
       })
-    );
+      .pipe(
+        map((response) => response.isRegistered),
+        catchError((error) => {
+          console.error('Error checking patient registration:', error);
+          return of(false); // Return false in case of an error
+        })
+      );
   }
 
   /**
    * Creates a FormData object from the provided patient data and optional image file.
-   * 
+   *
    * @param patientData - The patient's registration data.
    * @param imageFile - An optional image file for the patient's profile.
    * @returns A FormData object containing the patient data and image file.
    */
-  private createFormData(patientData: PatientRegistrationData, imageFile?: File): FormData {
+  private createFormData(
+    patientData: PatientRegistrationData,
+    imageFile?: File
+  ): FormData {
     const formData = new FormData();
 
     // Add all patient data fields to FormData
@@ -123,38 +133,56 @@ export class PatientService {
 
   // Fetch patient profile
   getPatientProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/profile`, {
-      headers: this.getAuthHeaders(),
-    }).pipe(
-      catchError((error) => {
-        console.error('Error fetching patient profile:', error);
-        return of(null); // Return null in case of an error
+    return this.http
+      .get(`${this.apiUrl}/profile`, {
+        headers: this.getAuthHeaders(),
       })
-    );
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching patient profile:', error);
+          return of(null); // Return null in case of an error
+        })
+      );
   }
 
   // Fetch medical history
   getMedicalHistory(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/medical-history`, {
-      headers: this.getAuthHeaders(),
-    }).pipe(
-      catchError((error) => {
-        console.error('Error fetching medical history:', error);
-        return of([]); // Return an empty array in case of an error
-      })
-    );
+    // Return static medical history data since backend is not implemented
+    const staticMedicalHistory = [
+      {
+        date: '2025-06-10',
+        diagnosis: 'Hypertension',
+        treatment: 'Lifestyle modification, medication',
+        doctor: 'Dr. John Smith',
+      },
+      {
+        date: '2025-05-20',
+        diagnosis: 'Seasonal Allergy',
+        treatment: 'Antihistamines',
+        doctor: 'Dr. Emily Brown',
+      },
+    ];
+    return of({ data: staticMedicalHistory });
   }
 
   // Fetch patient reviews
   getPatientReviews(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/reviews`, {
-      headers: this.getAuthHeaders(),
-    }).pipe(
-      catchError((error) => {
-        console.error('Error fetching patient reviews:', error);
-        return of([]); // Return an empty array in case of an error
-      })
-    );
+    // Return static reviews data since backend is not implemented
+    const staticReviews = [
+      {
+        reviewer: 'Dr. John Smith',
+        rating: 5,
+        comment: 'Excellent patient, very cooperative and punctual.',
+        date: '2025-07-01',
+      },
+      {
+        reviewer: 'Dr. Emily Brown',
+        rating: 4,
+        comment: 'Good communication and follows instructions well.',
+        date: '2025-06-15',
+      },
+    ];
+    return of({ data: staticReviews });
   }
 
   getPatientDashboardStats(): Observable<any> {

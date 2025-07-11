@@ -59,6 +59,9 @@ export class AuthService {
       tap((response)=>{
         localStorage.setItem('token', response.token);
         localStorage.setItem('userRole', response.user.role);
+        localStorage.setItem('userEmail', response.user.email);
+        localStorage.setItem('userFirstName', response.user.firstName || '');
+        localStorage.setItem('userLastName', response.user.lastName || '');
         this.isAuthenticated = true;
         this.role = response.user.role;
       })
@@ -101,5 +104,16 @@ export class AuthService {
     this.role = '';
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userFirstName');
+    localStorage.removeItem('userLastName');
+  }
+
+  // Get current user info from localStorage
+  getCurrentUser() {
+    const email = localStorage.getItem('userEmail') || '';
+    const firstName = localStorage.getItem('userFirstName') || '';
+    const lastName = localStorage.getItem('userLastName') || '';
+    return { email, firstName, lastName };
   }
 }

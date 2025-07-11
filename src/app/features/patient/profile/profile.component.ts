@@ -36,12 +36,30 @@ export class ProfileComponent implements OnInit {
   loadProfile(): void {
     this.patientService.getPatientProfile().subscribe({
       next: (response) => {
-        if (response) {
-          this.profile = response.data;
+        if (response && response.data) {
+          const p = response.data;
+          this.profile = {
+            img: p.img || '',
+            name: (p.first_name && p.last_name) ? `${p.first_name} ${p.last_name}` : '',
+            email: p.email || '',
+            gender: p.gender || '',
+            dateOfBirth: p.date_of_birth || '',
+            phoneNumber: p.phone || '',
+            maritalStatus: p.marital_status || '',
+            bloodGroup: p.blood_group || '',
+            address: p.address || '',
+            contactPerson: p.emergency_contact_name || '',
+            emergencyContact: p.emergency_contact_number || '',
+            lastVisit: p.updated_at || '',
+            appointments: p.appointments || 0, // fallback if not present
+          };
+        } else {
+          this.profile = {};
         }
       },
       error: (error) => {
         console.error('Error loading profile:', error);
+        this.profile = {};
       }
     });
   }
