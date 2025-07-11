@@ -22,6 +22,7 @@ import { AppointmentsListComponent } from './features/admin/appointments-list/ap
 import { PatientsListComponent } from './features/admin/patients-list/patients-list.component';
 import { DoctorPatientsListComponent } from './features/doctors/patients-list/patients-list.component';
 import { BillingOverviewComponent } from './features/doctors/billing-overview/billing-overview.component';
+import { BillingOverviewComponent as AdminBillingOverviewComponent } from './features/admin/billing-overview/billing-overview.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Homepage
@@ -92,6 +93,11 @@ export const routes: Routes = [
     {
         path: 'doctor/billing',
         component: BillingOverviewComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'record/billing',
+        component: AdminBillingOverviewComponent,
         canActivate: [AuthGuard]
     },
     { path: '**', component: NotFoundComponent }, // Redirect invalid routes to home

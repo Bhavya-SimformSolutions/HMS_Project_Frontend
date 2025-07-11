@@ -47,4 +47,17 @@ export class AdminService {
     if (status) url += `&status=${status}`;
     return this.http.get<any>(url, { headers: this.getAuthHeaders() });
   }
+
+  getPaginatedAdminBilling(page: number = 1, limit: number = 10, search: string = '', sortOrder: 'asc' | 'desc' = 'desc', filters?: any) {
+    const params: any = { page, limit, sortOrder };
+    if (search) params.search = search;
+    if (filters?.doctor) params.doctor = filters.doctor;
+    if (filters?.status) params.status = filters.status;
+    if (filters?.dateFrom) params.dateFrom = filters.dateFrom;
+    if (filters?.dateTo) params.dateTo = filters.dateTo;
+    return this.http.get<{ bills: any[]; total: number; page: number; limit: number }>(
+      `${environment.apiUrl}/admin/billing`,
+      { headers: this.getAuthHeaders(), params }
+    );
+  }
 } 

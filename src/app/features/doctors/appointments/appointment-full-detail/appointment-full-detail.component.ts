@@ -12,6 +12,8 @@ import { AddBillModalComponent } from '../bills/add-bill-modal.component';
 import { PatientBillsListComponent } from '../bills/patient-bills-list.component';
 import { GenerateFinalBillModalComponent } from '../bills/generate-final-bill-modal.component';
 import { ChartsComponent } from '../charts/charts.component';
+import { AuthService } from '../../../../core/services/auth.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-appointment-full-detail',
@@ -32,16 +34,19 @@ export class AppointmentFullDetailComponent implements OnInit {
   showAddBillModal = false;
   showGenerateFinalBillModal = false;
   billsTotal = 0;
-  billsRefreshTrigger = 0; // Used to trigger bills list refresh
-  userRole = 'doctor'; // TODO: Replace with actual role from auth service
+
+  userRole: string = '';
+  billsRefreshTrigger = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private doctorService: DoctorsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    this.userRole = this.authService.getRole();
     const appointmentId = this.route.snapshot.paramMap.get('id');
     if (appointmentId) {
       this.loadAppointmentDetails(+appointmentId);
@@ -125,9 +130,6 @@ export class AppointmentFullDetailComponent implements OnInit {
 
   closeAddBillModal(refresh: boolean) {
     this.showAddBillModal = false;
-    if (refresh) {
-      this.billsRefreshTrigger++;
-    }
   }
 
   openGenerateFinalBillModal() {
@@ -136,13 +138,11 @@ export class AppointmentFullDetailComponent implements OnInit {
 
   closeGenerateFinalBillModal(refresh: boolean) {
     this.showGenerateFinalBillModal = false;
-    if (refresh) {
-      this.billsRefreshTrigger++;
-    }
   }
 
   onBillsChanged() {
-    // Increment the key to force PatientBillsListComponent to reload
-    this.billsRefreshTrigger++;
+    // This will be called when bills are added/deleted/generated
+    // You may want to fetch the latest total from the child or recalculate
+    // For now, just trigger change detection or fetch if needed
   }
 }
