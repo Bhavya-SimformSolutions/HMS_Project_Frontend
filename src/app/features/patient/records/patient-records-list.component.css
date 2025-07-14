@@ -1,0 +1,58 @@
+/* Patient Records List Table Styles */
+.patients-table-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 1.5rem;
+}
+.patients-table th, .patients-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+.patients-table th {
+  background: #f5f6fa;
+  font-weight: 600;
+}
+.view-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 1rem;
+}
+.details-btn {
+  background: none;
+  border: 1px solid #2563eb;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 1.2rem;
+  padding: 0.3rem 0.4rem;
+  transition: background 0.2s, color 0.2s;
+}
+.details-btn:hover {
+  background: #2563eb;
+  color: #fff;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-3 { gap: 0.75rem; }
+.h-9 { height: 2.25rem; }
+.w-9 { width: 2.25rem; }
+.rounded-full { border-radius: 9999px; }
+.bg-blue-100 { background: #dbeafe; }
+.text-blue-700 { color: #2563eb; }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+.text-xs { font-size: 0.75rem; }
+.text-gray-900 { color: #111827; }
+.text-gray-500 { color: #6b7280; }
+
+input[type="date"] {
+  min-width: 120px;
+}

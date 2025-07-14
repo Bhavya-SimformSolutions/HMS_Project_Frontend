@@ -190,4 +190,61 @@ export class PatientService {
       headers: this.getAuthHeaders(),
     });
   }
+
+  /**
+   * Fetch paginated, searchable, filterable patient records
+   */
+  getPatientRecords(
+    page: number,
+    limit: number,
+    search?: string,
+    filters?: any
+  ): Observable<{ data: any[]; total: number }> {
+    let params: any = { page, limit };
+    if (search) params.search = search;
+    if (filters && Object.keys(filters).length > 0)
+      params.filters = JSON.stringify(filters);
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/records`, {
+      headers: this.getAuthHeaders(),
+      params,
+    });
+  }
+
+  /**
+   * Fetch paginated, searchable, filterable patient prescriptions
+   */
+  getPatientPrescriptions(
+    page: number,
+    limit: number,
+    search?: string,
+    filters?: any
+  ): Observable<{ data: any[]; total: number }> {
+    let params: any = { page, limit };
+    if (search) params.search = search;
+    if (filters && Object.keys(filters).length > 0)
+      params.filters = JSON.stringify(filters);
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/prescriptions`, {
+      headers: this.getAuthHeaders(),
+      params,
+    });
+  }
+
+  /**
+   * Fetch paginated, searchable, filterable patient billing
+   */
+  getPatientBilling(
+    page: number,
+    limit: number,
+    search?: string,
+    filters?: any
+  ): Observable<{ data: any[]; total: number }> {
+    let params: any = { page, limit };
+    if (search) params.search = search;
+    if (filters && Object.keys(filters).length > 0)
+      params.filters = JSON.stringify(filters);
+    return this.http.get<{ data: any[]; total: number }>(`${this.apiUrl}/billing`, {
+      headers: this.getAuthHeaders(),
+      params,
+    });
+  }
 }

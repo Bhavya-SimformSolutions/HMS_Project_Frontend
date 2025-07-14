@@ -22,4 +22,10 @@ export class VitalsService {
       headers: this.getAuthHeaders(),
     });
   }
-} 
+
+  getDoctorVitalsByAppointmentId(appointmentId: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/doctor/appointments/${appointmentId}/vitals`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+}

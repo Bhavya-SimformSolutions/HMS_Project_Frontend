@@ -21,7 +21,7 @@ export class ChartsComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.appointmentId) {
-      this.vitalsService.getVitalsByAppointmentId(this.appointmentId).subscribe({
+      this.vitalsService.getDoctorVitalsByAppointmentId(this.appointmentId).subscribe({
         next: (res: any) => {
           this.vitals = res.vitals || [];
           this.loading = false;
@@ -34,4 +34,4 @@ export class ChartsComponent implements OnInit {
       });
     }
   }
-} 
+}

@@ -24,9 +24,9 @@ export const SIDEBAR_LINKS = [
       // { name: "Patient Management", href: "/nurse/patient-management", access: ["NURSE"], icon: 'people'},
       // { name: "Administer Medications", href: "/nurse/administer-medications", access: ["ADMIN", "DOCTOR"], icon: 'medication'},
       { name: "Appointments", href: "/appointments", access: ["PATIENT"], icon: 'event'},
-      { name: "Records", href: "/patient/self", access: ["PATIENT"], icon: 'folder'},
-      { name: "Prescription", href: "#", access: ["PATIENT"], icon: 'medication'},
-      { name: "Billing", href: "/patient/self?cat=payments", access: ["PATIENT"], icon: 'receipt'},
+      { name: "Records", href: "/patient/records", access: ["PATIENT"], icon: 'folder'},
+      { name: "Prescription", href: "/patient/prescriptions", access: ["PATIENT"], icon: 'medication'},
+      { name: "Billing", href: "/patient/billing", access: ["PATIENT"], icon: 'receipt'},
     ],
   },
   {
