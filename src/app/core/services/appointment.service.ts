@@ -78,4 +78,31 @@ export class AppointmentService {
       headers: this.getAuthHeaders(),
     });
   }
-} 
+
+  // Patient-specific methods to get appointment details with nested data
+  // Note: These use patient endpoints - if they don't exist on backend, they will fallback gracefully
+  getPatientAppointmentBills(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/bills`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  getPatientAppointmentDiagnosis(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/diagnosis`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  getPatientAppointmentVitals(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/vitals`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  // Get full appointment details with medical data (patient view)
+  getPatientAppointmentWithMedical(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}/full`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+}

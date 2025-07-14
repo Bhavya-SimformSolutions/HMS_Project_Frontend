@@ -23,6 +23,7 @@ import { PatientsListComponent } from './features/admin/patients-list/patients-l
 import { DoctorPatientsListComponent } from './features/doctors/patients-list/patients-list.component';
 import { BillingOverviewComponent } from './features/doctors/billing-overview/billing-overview.component';
 import { BillingOverviewComponent as AdminBillingOverviewComponent } from './features/admin/billing-overview/billing-overview.component';
+import { PatientAppointmentFullDetailComponent } from './features/patient/appointments/appointment-full-detail/patient-appointment-full-detail.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent }, // Homepage
@@ -44,6 +45,11 @@ export const routes: Routes = [
     {
         path:'appointments',
         component: AppointmentsComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'patient/appointments/:id',
+        component: PatientAppointmentFullDetailComponent,
         canActivate: [AuthGuard]
     },
     {

@@ -1,0 +1,158 @@
+<div class="flex h-screen bg-gray-50">
+  <app-sidebar></app-sidebar>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-8 py-4">
+      <h1 class="text-xl font-semibold text-gray-900">
+        Appointment Details
+      </h1>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto">
+      <div *ngIf="isLoading" class="flex justify-center items-center h-full">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+
+      <div *ngIf="!isLoading && appointment" class="p-8 grid grid-cols-12 gap-8">
+        <!-- Left Column -->
+        <div class="col-span-12 lg:col-span-8">
+          <!-- VITALS TAB: Vital Signs -->
+          <ng-container *ngIf="activeTab === 'vitals'">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">Vital Signs</h2>
+              </div>
+              <!-- Vitals Table -->
+                  <div *ngIf="appointment?.medical && appointment?.medical?.vital_signs?.length; else noVitals">
+                    <div class="flow-root">
+                      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                          <table class="min-w-full divide-y divide-gray-300">
+                            <thead>
+                              <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Reading Date & Time</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Temp</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">BP</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Heart Rate</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Weight/Height</th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                              <tr *ngFor="let vitals of appointment?.medical?.vital_signs">
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">{{ vitals.created_at | date:'medium' }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ vitals.body_temperature }} °C</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ vitals.systolic }}/{{ vitals.diastolic }} mmHg</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ vitals.heart_rate }} BPM</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ vitals.weight }}kg / {{ vitals.height }}cm</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-template #noVitals>
+                    <div class="text-center text-gray-500 py-6">
+                      No vital signs recorded for this appointment yet.
+                    </div>
+                  </ng-template>
+                </div>
+              </ng-container>
+
+              <!-- DIAGNOSIS TAB: Diagnosis Section -->
+              <ng-container *ngIf="activeTab === 'diagnosis'">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Diagnosis</h2>
+                  </div>
+                  <div *ngIf="isDiagnosisLoading" class="text-center text-gray-500 py-6">
+                    Loading diagnosis...
+                  </div>
+                  <div *ngIf="!isDiagnosisLoading && diagnosisList.length === 0" class="text-center text-gray-500 py-6">
+                    No Diagnosis found for this appointment
+                  </div>
+                  <div *ngIf="!isDiagnosisLoading && diagnosisList.length > 0">
+                    <div *ngFor="let diag of diagnosisList" class="mb-6 border-b pb-4 last:border-b-0 last:pb-0">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="material-icons text-blue-600">assignment</span>
+                        <span class="font-semibold text-gray-800">{{ diag.diagnosis }}</span>
+                        <span class="ml-auto text-xs text-gray-400">{{ diag.created_at | date:'medium' }}</span>
+                      </div>
+                      <div class="text-sm text-gray-700 mb-1"><span class="font-semibold">Symptoms:</span> {{ diag.symptoms }}</div>
+                      <div class="text-sm text-gray-700 mb-1" *ngIf="diag.prescribed_medications"><span class="font-semibold">Prescriptions:</span> {{ diag.prescribed_medications }}</div>
+                      <div class="text-sm text-gray-700 mb-1" *ngIf="diag.notes"><span class="font-semibold">Notes:</span> {{ diag.notes }}</div>
+                      <div class="text-sm text-gray-700 mb-1" *ngIf="diag.follow_up_plan"><span class="font-semibold">Follow Up:</span> {{ diag.follow_up_plan }}</div>
+                      <div class="text-xs text-gray-500 mt-2">By Dr. {{ diag.doctor?.name || 'Unknown' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- BILLS TAB: Bills Section -->
+              <ng-container *ngIf="activeTab === 'bills'">
+                <app-patient-bills-list 
+                  [appointmentId]="appointment.id" 
+                  [appointmentStatus]="appointment.status" 
+                  [refreshTrigger]="billsRefreshTrigger" 
+                  (billsChanged)="onBillsChanged()" 
+                  (totalBillChange)="billsTotal = $event" 
+                  [userRole]="userRole">
+                </app-patient-bills-list>
+              </ng-container>
+
+              <!-- CHARTS TAB: Charts Section -->
+              <ng-container *ngIf="activeTab === 'charts'">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <app-patient-charts [appointmentId]="appointment.id"></app-patient-charts>
+                </div>
+              </ng-container>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-span-12 lg:col-span-4 space-y-8">
+          <!-- Quick Links -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 class="text-base font-semibold text-gray-800 mb-4">Quick Links</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <button (click)="setActiveTab('charts')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'charts', 'bg-gray-100 text-gray-700': activeTab !== 'charts'}" class="px-3 py-2 rounded-md transition-colors text-center">Charts</button>
+              <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Medical History</button>
+              <button (click)="setActiveTab('diagnosis')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'diagnosis', 'bg-gray-100 text-gray-700': activeTab !== 'diagnosis'}" class="px-3 py-2 rounded-md transition-colors text-center">Diagnosis</button>
+              <button (click)="setActiveTab('vitals')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'vitals', 'bg-gray-100 text-gray-700': activeTab !== 'vitals'}" class="px-3 py-2 rounded-md transition-colors text-center">Vital Signs</button>
+              <button (click)="setActiveTab('bills')" [ngClass]="{'bg-blue-600 text-white font-semibold': activeTab === 'bills', 'bg-gray-100 text-gray-700': activeTab !== 'bills'}" class="px-3 py-2 rounded-md transition-colors text-center">Medical Bills</button>
+              <button class="px-3 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-center" disabled>Payments</button>
+            </div>
+          </div>
+
+          <!-- Patient Info -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex flex-col items-center text-center">
+              <img [src]="'http://localhost:3000' + (appointment.patient.img || '/uploads/default-avatar.png')" alt="Patient Photo" class="h-24 w-24 rounded-full object-cover mb-4 border-4 border-white shadow-md">
+              <h3 class="text-lg font-semibold text-gray-900">{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h3>
+              <p class="text-sm text-gray-500">Patient ID: {{ appointment.patient.user_id }}</p>
+            </div>
+            <div class="mt-6 space-y-4 text-sm">
+              <div>
+                <label class="font-semibold text-gray-700">Date of Birth</label>
+                <p class="text-gray-600">{{ appointment.patient.date_of_birth | date: 'longDate' }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-gray-700">Address</label>
+                <p class="text-gray-600">{{ appointment.patient.address }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-gray-700">Email</label>
+                <p class="text-gray-600">{{ appointment.patient.email }}</p>
+              </div>
+              <div>
+                <label class="font-semibold text-gray-700">Mobile</label>
+                <p class="text-gray-600">{{ appointment.patient.phone }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

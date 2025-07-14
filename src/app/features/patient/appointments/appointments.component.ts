@@ -8,6 +8,7 @@ import { AppointmentFormComponent } from './appointment-form/appointment-form.co
 import { AuthService } from '../../../core/services/auth.service';
 import { AppointmentDetailComponent } from "./appointment-detail/appointment-detail.component";
 import { Appointment } from '../../../shared/models/appointment.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointments',
@@ -31,7 +32,8 @@ export class AppointmentsComponent implements OnInit {
   constructor(
     private appointmentService: AppointmentService,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -103,17 +105,8 @@ export class AppointmentsComponent implements OnInit {
   }
 
   viewAppointment(appointmentId: number): void {
-    this.appointmentService.getAppointmentById(appointmentId).subscribe({
-      next: (response) => {
-        this.selectedAppointment = response.data;
-        this.closeActionMenu();
-        document.body.style.overflow = 'hidden';
-      },
-      error: (error) => {
-        console.error('Error fetching appointment:', error);
-        this.toastr.error('Failed to fetch appointment details');
-      }
-    });
+    this.closeActionMenu();
+    this.router.navigate(['/patient/appointments', appointmentId]);
   }
 
   closeViewModal(): void {

@@ -1,0 +1,90 @@
+<div class="bg-white rounded-lg shadow-lg p-6 relative">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold">Patient Bills</h2>
+  </div>
+  <div *ngIf="isLoading" class="text-center py-8 text-gray-500">Loading bills...</div>
+  <div *ngIf="error" class="text-center py-8 text-red-500">{{ error }}</div>
+  <div *ngIf="!isLoading && !error">
+    <ng-container *ngIf="!finalized; else finalBillSummary">
+      <table class="w-full text-sm border rounded-lg overflow-hidden">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-3 py-2 text-left">NO</th>
+            <th class="px-3 py-2 text-left">SERVICE</th>
+            <th class="px-3 py-2 text-left">DATE</th>
+            <th class="px-3 py-2 text-left">QUANTITY</th>
+            <th class="px-3 py-2 text-left">UNIT PRICE</th>
+            <th class="px-3 py-2 text-left">TOTAL COST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="bills.length === 0">
+            <td colspan="6" class="text-center py-6 text-gray-400">No Data found</td>
+          </tr>
+          <tr *ngFor="let bill of bills; let i = index">
+            <td class="px-3 py-2">{{ i + 1 }}</td>
+            <td class="px-3 py-2">{{ bill.service?.service_name }}</td>
+            <td class="px-3 py-2">{{ bill.service_date | date:'dd-MM-yyyy' }}</td>
+            <td class="px-3 py-2">{{ bill.quantity }}</td>
+            <td class="px-3 py-2">{{ bill.unit_cost | number:'1.2-2' }}</td>
+            <td class="px-3 py-2">{{ bill.total_cost | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="flex justify-between items-center mt-8 border-t pt-4 text-sm">
+        <div class="flex gap-8">
+          <div><span class="font-semibold">Total Bill</span><br><span>{{ totalBill | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Discount</span><br><span class="text-yellow-500">{{ discount | number:'1.2-2' }} ({{ discount || 0 }}%)</span></div>
+          <div><span class="font-semibold">Payable</span><br><span>{{ payable | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Amount Paid</span><br><span class="text-green-600">{{ amountPaid | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Unpaid Amount</span><br><span class="text-red-500">{{ unpaidAmount | number:'1.2-2' }}</span></div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #finalBillSummary>
+      <div class="p-6 bg-blue-50 rounded-lg border border-blue-200 relative group">
+        <div class="flex items-center justify-between cursor-pointer" (click)="toggleFinalBillAccordion()">
+          <h3 class="text-lg font-bold mb-2 text-blue-700">Final Bill Summary</h3>
+          <div class="flex items-center gap-2 ml-auto">
+            <button (click)="toggleFinalBillAccordion(); $event.stopPropagation();" class="text-blue-600 hover:text-blue-800" style="margin-left: 8px;">
+              <span class="material-icons">{{ finalBillAccordionOpen ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex gap-8 mb-2">
+          <div><span class="font-semibold">Total Bill</span><br><span>{{ payment?.total_amount | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Discount</span><br><span class="text-yellow-500">{{ payment?.discount | number:'1.2-2' }} ({{ payment?.discount || 0 }}%)</span></div>
+          <div><span class="font-semibold">Payable</span><br><span>{{ payment?.total_amount - ((payment?.total_amount || 0) * (payment?.discount || 0) / 100) | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Amount Paid</span><br><span class="text-green-600">{{ payment?.amount_paid | number:'1.2-2' }}</span></div>
+          <div><span class="font-semibold">Unpaid Amount</span><br><span class="text-red-500">{{ (payment?.total_amount - ((payment?.total_amount || 0) * (payment?.discount || 0) / 100) - (payment?.amount_paid || 0)) | number:'1.2-2' }}</span></div>
+        </div>
+        <div class="text-sm text-gray-600">Bill Date: {{ payment?.bill_date | date:'dd-MM-yyyy' }}</div>
+        <div class="text-sm text-gray-600">Status: <span [ngClass]="{'text-green-600': paymentStatus === 'PAID', 'text-red-500': paymentStatus !== 'PAID'}">{{ paymentStatus }}</span></div>
+        <div *ngIf="finalBillAccordionOpen" class="mt-4">
+          <table class="w-full text-sm border rounded-lg overflow-hidden">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-3 py-2 text-left">NO</th>
+                <th class="px-3 py-2 text-left">SERVICE</th>
+                <th class="px-3 py-2 text-left">DATE</th>
+                <th class="px-3 py-2 text-left">QUANTITY</th>
+                <th class="px-3 py-2 text-left">UNIT PRICE</th>
+                <th class="px-3 py-2 text-left">TOTAL COST</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let bill of bills; let i = index">
+                <td class="px-3 py-2">{{ i + 1 }}</td>
+                <td class="px-3 py-2">{{ bill.service?.service_name }}</td>
+                <td class="px-3 py-2">{{ bill.service_date | date:'dd-MM-yyyy' }}</td>
+                <td class="px-3 py-2">{{ bill.quantity }}</td>
+                <td class="px-3 py-2">{{ bill.unit_cost | number:'1.2-2' }}</td>
+                <td class="px-3 py-2">{{ bill.total_cost | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>

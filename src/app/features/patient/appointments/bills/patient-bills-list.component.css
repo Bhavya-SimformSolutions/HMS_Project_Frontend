@@ -1,0 +1,40 @@
+/* Patient Bills List Component Styles */
+
+.bills-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.bills-table th,
+.bills-table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.bills-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+}
+
+.bills-summary {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 2rem;
+}
+
+.final-bill-card {
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.accordion-button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.accordion-button:hover {
+  background-color: #f3f4f6;
+}
