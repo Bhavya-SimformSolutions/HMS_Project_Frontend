@@ -1,8 +1,16 @@
 <span class="relative inline-block w-full">
   <ng-content></ng-content>
+  
+  <!-- Notification count badge -->
   <span *ngIf="unreadCount > 0"
         class="inline-flex items-center justify-center bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 ml-2">
     {{ unreadCount }}
+  </span>
+  
+  <!-- WebSocket connection status indicator -->
+  <span class="absolute top-0 right-0 w-2 h-2 rounded-full"
+        [class]="isWebSocketConnected ? 'bg-green-400' : 'bg-gray-400'"
+        [title]="isWebSocketConnected ? 'Real-time notifications active' : 'Using polling fallback'">
   </span>
 </span>
 <ng-content *ngIf="unreadCount === 0"></ng-content> 

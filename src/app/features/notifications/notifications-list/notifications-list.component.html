@@ -5,8 +5,26 @@
   <!-- Right Side Content -->
   <div class="flex-1 flex flex-col">
     <!-- Route Header -->
-    <div class="bg-white border-b border-gray-200 px-8 py-4">
-      <h1 class="text-xl font-semibold text-gray-900">Notifications</h1>
+    <div class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-semibold text-gray-900">Notifications</h1>
+        
+        <!-- Real-time status indicator -->
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full"
+                [class]="isWebSocketConnected ? 'bg-green-400' : 'bg-gray-400'"></span>
+          <span class="text-sm text-gray-600">
+            {{ isWebSocketConnected ? 'Real-time' : 'Polling' }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Refresh button -->
+      <button (click)="refreshNotifications()" 
+              class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+        <span class="material-icons text-sm">refresh</span>
+        Refresh
+      </button>
     </div>
 
     <!-- Main Content Area -->

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, tap } from 'rxjs';
+import { WebSocketService } from './websocket.service';
 
 interface LoginResponse {
   token: string;
@@ -37,7 +38,10 @@ export class AuthService {
   private role: string = ''; 
   private patientDetails = new BehaviorSubject<PatientDetails | null>(null);
 
-  constructor(private http:HttpClient) { 
+  constructor(
+    private http: HttpClient,
+    private webSocketService: WebSocketService
+  ) { 
     // Initialize authentication state from localStorage
     this.initializeAuthState();
   }
@@ -50,6 +54,10 @@ export class AuthService {
     if (token && storedRole) {
       this.isAuthenticated = true;
       this.role = storedRole;
+      
+      // Connect to WebSocket if user is already authenticated
+      console.log('User already authenticated, connecting to WebSocket...');
+      this.webSocketService.connect();
     }
   }
 
@@ -64,6 +72,10 @@ export class AuthService {
         localStorage.setItem('userLastName', response.user.lastName || '');
         this.isAuthenticated = true;
         this.role = response.user.role;
+        
+        // Connect to WebSocket after successful login
+        console.log('Login successful, connecting to WebSocket...');
+        this.webSocketService.connect();
       })
     )
   }
@@ -102,6 +114,11 @@ export class AuthService {
   logout(): void {
     this.isAuthenticated = false;
     this.role = '';
+    
+    // Disconnect from WebSocket before clearing localStorage
+    console.log('Logging out, disconnecting from WebSocket...');
+    this.webSocketService.disconnect();
+    
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
     localStorage.removeItem('userEmail');
